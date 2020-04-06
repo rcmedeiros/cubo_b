@@ -1,0 +1,91 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is the back end documentation",
+    "version": "1.0.0",
+    "title": "Cubo",
+    "contact": {
+      "email": "rcmedeiros@gmail.com"
+    },
+    "license": {
+      "name": "ISC",
+      "url": "https://opensource.org/licenses/ISC"
+    }
+  },
+  "host": "localhost",
+  "basePath": "/api",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/data": {
+      "post": {
+        "summary": "Submit data",
+        "description": "Submit data",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Data object that needs to be added to the collection",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Data"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "get": {
+        "summary": "List Data",
+        "description": "List all data",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Data"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Data": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string",
+          "description": "First Name"
+        },
+        "lastName": {
+          "type": "string",
+          "description": "Last Name"
+        },
+        "participation": {
+          "type": "number",
+          "format": "float",
+          "description": "Percent of Parcicipaton"
+        }
+      }
+    }
+  }
+}

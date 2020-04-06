@@ -2,13 +2,13 @@
   "name": "cubo_b",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index",
   "scripts": {
     "test": "SET TS_NODE_PROJECT=test/tsconfig.json&& nyc mocha --ui bdd --timeout 30000 --colors --exit -r ts-node/register test/**/*-test.ts&& nyc report --reporter=html --report-dir coverage",
-    "watch": "tsc -w -p tsconfig.json && cp \"package.json\" \"dist/\"",
-    "dist": "tsc -p tsconfig.json && cp \"package.json\" \"dist/\"",
-    "dist:dev": "tsc -p tsconfig.json --removeComments false --listFiles false --sourceMap false --inlineSourceMap true --inlineSources true --listEmittedFiles false --declaration true && cp \"package.json\" \"dist/\"",
-    "dist:prod": "tsc -p tsconfig.json --removeComments false --listFiles false --sourceMap false --inlineSourceMap false --inlineSources false --listEmittedFiles false --declaration true && cp \"package.json\" \"dist/\""
+    "watch": "tsc -w -p tsconfig.json && cp \"package.json\" \"dist/\" && cp \"src/swagger.json\" \"dist/\"",
+    "dist": "tsc -p tsconfig.json && cp \"package.json\" \"dist/\" && cp \"src/swagger.json\" \"dist/\"",
+    "dist:dev": "tsc -p tsconfig.json --removeComments false --listFiles false --sourceMap false --inlineSourceMap true --inlineSources true --listEmittedFiles false --declaration true && cp \"package.json\" \"dist/\" && cp \"src/swagger.json\" \"dist/\"",
+    "dist:prod": "tsc -p tsconfig.json --removeComments false --listFiles false --sourceMap false --inlineSourceMap false --inlineSources false --listEmittedFiles false --declaration true && cp \"package.json\" \"dist/\" && cp \"src/swagger.json\" \"dist/\""
   },
   "author": "Rafael Medeiros <rcmedeiros@gmail.com>",
   "license": "ISC",
@@ -19,6 +19,7 @@
   "devDependencies": {
     "@types/body-parser": "^1.19.0",
     "@types/chai": "^4.2.11",
+    "@types/compression": "^1.7.0",
     "@types/cors": "^2.8.6",
     "@types/express": "^4.17.4",
     "@types/figlet": "^1.2.0",
