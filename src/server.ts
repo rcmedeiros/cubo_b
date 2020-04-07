@@ -13,6 +13,7 @@ import swaggerUiExpress from 'swagger-ui-express';
 import { DEFAULT_SERVER_PORT, ENDPOINT_API, ENDPOINT_HEALTH_CHECK, ENDPOINT_OPEN_API, MODULE_NAME } from './constants/defaults';
 import { HttpStatusCode } from './constants/http_status_code';
 import { DataController } from './controllers/data-ctrl';
+import { HttpError } from './error/http-error';
 
 export class CubeServer {
     private readonly app: core.Express;
@@ -66,19 +67,20 @@ export class CubeServer {
         this.controllers.getData = new DataController();
         this.app.get(`${ENDPOINT_API}/data`, (_req: Request, res: Response) => {
             const ctrl: DataController = this.controllers.getData as DataController;
-            try {
-                res.json(ctrl.get())
-            } catch {
-                res.sendStatus(HttpStatusCode.INTERNAL_SERVER_ERROR);
-            }
+            res.json(ctrl.get())
         })
         this.app.post(`${ENDPOINT_API}/data`, (req: Request, res: Response) => {
             const ctrl: DataController = this.controllers.getData as DataController;
             try {
                 ctrl.set(req.body);
                 res.sendStatus(HttpStatusCode.ACCEPTED);
-            } catch {
-                res.sendStatus(HttpStatusCode.INTERNAL_SERVER_ERROR);
+            } catch (e) {
+                if ((e as HttpError).code) {
+                    res.status((e as HttpError).code).json({ error: e.message })
+                } else {
+                    res.sendStatus(HttpStatusCode.INTERNAL_SERVER_ERROR);
+                }
+
             }
         })
     }
