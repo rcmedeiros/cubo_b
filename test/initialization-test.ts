@@ -3,7 +3,7 @@ import { HttpResponse } from 'chai_http_ext';
 import chaiHttp from 'chai-http';
 import { describe, Done, it } from 'mocha';
 
-import { DEFAULT_SERVER_PORT, ENDPOINT_HEALTH_CHECK, ENDPOINT_OPEN_API } from '../src/constants/defaults';
+import { ENDPOINT_HEALTH_CHECK, ENDPOINT_OPEN_API } from '../src/constants/defaults';
 import { HttpStatusCode } from '../src/constants/http_status_code';
 import { CubeServer } from '../src/server';
 
@@ -13,10 +13,10 @@ chai.use(chaiHttp);
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 const healthyStart: Function = (done: Done, endpoint: string, negativeTest?: boolean): void => {
-    const s: CubeServer = new CubeServer();
+    const s: CubeServer = new CubeServer(8282);
     s.listen().then(() => {
 
-        chai.request(`http://localhost:${process.env.CUBE_PORT || DEFAULT_SERVER_PORT}`)
+        chai.request(`http://localhost:8282`)
             .get(endpoint)
             .end((err: Error, res: HttpResponse) => {
                 if (!err) {

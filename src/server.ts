@@ -10,34 +10,24 @@ import { Server } from 'http';
 import path from 'path';
 import swaggerUiExpress from 'swagger-ui-express';
 
-import { DEFAULT_SERVER_PORT, ENDPOINT_HEALTH_CHECK, ENDPOINT_OPEN_API, MODULE_NAME } from './constants/defaults';
+import { DEFAULT_SERVER_PORT, ENDPOINT_API, ENDPOINT_HEALTH_CHECK, ENDPOINT_OPEN_API, MODULE_NAME } from './constants/defaults';
 import { HttpStatusCode } from './constants/http_status_code';
+import { DataController } from './controllers/data-ctrl';
 
 export class CubeServer {
     private readonly app: core.Express;
     private server: Server;
+    private controllers: { [endpoint: string]: unknown } = {};
 
-    constructor() {
+    constructor(port?: number) {
         this.app = express();
-        this.app.set('port', process.env.CUBE_PORT || DEFAULT_SERVER_PORT);
+        this.app.set('port', port || DEFAULT_SERVER_PORT);
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({ extended: false }));
         this.app.use(bodyParser.raw());
         this.app.use(compression());
         this.app.use(helmet());
         this.app.use(cors({}));
-
-
-        this.app.get(ENDPOINT_HEALTH_CHECK, (_request: Request, response: Response) => {
-            response.sendStatus(HttpStatusCode.OK); // Should test all dependencies
-        });
-
-
-        if (!process.env.NODE_ENV || !process.env.NODE_ENV.startsWith('prod')) {
-            const json: object = JSON.parse(fs.readFileSync(path.join(__dirname, 'swagger.json')).toString());
-            this.app.use(ENDPOINT_OPEN_API, swaggerUiExpress.serve, swaggerUiExpress.setup(json));
-        }
-
     }
 
     private banner(): void {
@@ -62,8 +52,40 @@ export class CubeServer {
         });
     }
 
+    private assignRoutes(): void {
+
+        this.app.get(ENDPOINT_HEALTH_CHECK, (_request: Request, response: Response) => {
+            response.sendStatus(HttpStatusCode.OK); // Should test all dependencies
+        });
+
+        if (!process.env.NODE_ENV || !process.env.NODE_ENV.startsWith('prod')) {
+            const json: object = JSON.parse(fs.readFileSync(path.join(__dirname, 'swagger.json')).toString());
+            this.app.use(ENDPOINT_OPEN_API, swaggerUiExpress.serve, swaggerUiExpress.setup(json));
+        }
+
+        this.controllers.getData = new DataController();
+        this.app.get(`${ENDPOINT_API}/data`, (_req: Request, res: Response) => {
+            const ctrl: DataController = this.controllers.getData as DataController;
+            try {
+                res.json(ctrl.get())
+            } catch {
+                res.sendStatus(HttpStatusCode.INTERNAL_SERVER_ERROR);
+            }
+        })
+        this.app.post(`${ENDPOINT_API}/data`, (req: Request, res: Response) => {
+            const ctrl: DataController = this.controllers.getData as DataController;
+            try {
+                ctrl.set(req.body);
+                res.sendStatus(HttpStatusCode.ACCEPTED);
+            } catch {
+                res.sendStatus(HttpStatusCode.INTERNAL_SERVER_ERROR);
+            }
+        })
+    }
+
     public async listen(): Promise<Server> {
         return new Promise((resolve: Function, reject: Function) => {
+            this.assignRoutes();
             this.server = this.app.listen(this.app.get('port'), (err: Error) => {
                 /* istanbul ignore if */
                 if (err) { reject(err) } else {
