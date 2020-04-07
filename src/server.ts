@@ -65,11 +65,25 @@ export class CubeServer {
     public async listen(): Promise<Server> {
         return new Promise((resolve: Function, reject: Function) => {
             this.server = this.app.listen(this.app.get('port'), (err: Error) => {
+                /* istanbul ignore if */
                 if (err) { reject(err) } else {
                     this.banner();
                     resolve(this.server);
                 }
             });
         })
+    }
+
+    public async close(): Promise<void> {
+        return new Promise((resolve: Function, reject: Function): void => {
+            this.server.close((err: Error) => {
+                /* istanbul ignore if */
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            });
+        });
     }
 }

@@ -21,5 +21,28 @@
             "protocol": "inspector",
             "outputCapture": "std"
         },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "initialization test",
+            "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
+            "env": {
+                "TS_NODE_PROJECT": "tsconfig.json",
+                "TS_NODE_PRETTY": "true"
+            },
+            "args": [
+                "--ui",
+                "bdd",
+                "--timeout",
+                "99999",
+                "--exit",
+                "--colors",
+                "--require",
+                "ts-node/register",
+                "initialization-test.ts"
+            ],
+            "cwd": "${workspaceRoot}/test",
+            "internalConsoleOptions": "openOnSessionStart"
+        },
     ]
 }
