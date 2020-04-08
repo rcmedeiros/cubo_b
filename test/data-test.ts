@@ -46,10 +46,15 @@ describe('Data service', () => {
 
                 const b = JSON.stringify(res.body);
 
-                expect(b).to.contain(JSON.stringify(testMass[0]));
-                expect(b).to.contain(JSON.stringify(testMass[1]));
-                expect(b).to.contain(JSON.stringify(testMass[3]));
-                expect(b).to.not.contain(JSON.stringify(testMass[2]));
+                const s0 = JSON.stringify(testMass[0]);
+                const s1 = JSON.stringify(testMass[1]);
+                const s2 = JSON.stringify(testMass[2]);
+                const s3 = JSON.stringify(testMass[3]);
+
+                expect(b).to.contain(s0.substring(1, s0.length - 2));
+                expect(b).to.contain(s1.substring(1, s1.length - 2));
+                expect(b).to.contain(s3.substring(1, s3.length - 2));
+                expect(b).to.not.contain(s2.substring(1, s2.length - 2));
                 done();
             });
     });

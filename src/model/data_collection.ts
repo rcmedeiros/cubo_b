@@ -3,6 +3,7 @@ import { Data } from "./data";
 interface Collection { [name: string]: Data };
 export class DataCollection {
     private readonly collection: Collection = {};
+    private nextId = 0;
 
     public total(c: Collection): number {
         return Object.keys(c)
@@ -11,14 +12,15 @@ export class DataCollection {
     }
 
     public set(data: Data): boolean {
-
+        const hash = data.firstName.toLowerCase() + data.lastName.toLowerCase();
         const tmp: Collection = { ...this.collection };
-        tmp[data.firstName.toLowerCase() + data.lastName.toLowerCase()] = data;
+        tmp[hash] = data;
 
         if (this.total(tmp) > 100) {
             return false;
         } else {
-            this.collection[data.firstName.toLowerCase() + data.lastName.toLowerCase()] = data;
+            data.id = this.collection[hash]?.id || ++this.nextId;
+            this.collection[hash] = data;
             return true;
         }
 
