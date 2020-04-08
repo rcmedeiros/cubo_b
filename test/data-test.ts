@@ -28,7 +28,7 @@ describe('Data service', () => {
             chai.request(`${URI}`).post(DATA_SVC).set('content-type', 'application/json').send(JSON.stringify(d))
                 .end((err: Error, res: HttpResponse) => {
                     expect(err).to.be.null;
-                    expect(res.status).to.be.equal(HttpStatusCode.ACCEPTED);
+                    expect(res.status).to.be.equal(HttpStatusCode.OK);
                     count++;
                     if (count === testMass.length) {
                         done();

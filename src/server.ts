@@ -73,7 +73,7 @@ export class CubeServer {
             const ctrl: DataController = this.controllers.getData as DataController;
             try {
                 ctrl.set(req.body);
-                res.sendStatus(HttpStatusCode.ACCEPTED);
+                res.json({});
             } catch (e) {
                 if ((e as HttpError).code) {
                     res.status((e as HttpError).code).json({ error: e.message })
