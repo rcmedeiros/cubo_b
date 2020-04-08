@@ -4,6 +4,7 @@
   "description": "",
   "main": "index",
   "scripts": {
+    "start": "npx ts-node src/index.ts",
     "test": "SET TS_NODE_PROJECT=test/tsconfig.json&& nyc mocha --ui bdd --timeout 30000 --colors --exit -r ts-node/register test/**/*-test.ts&& nyc report --reporter=html --report-dir coverage",
     "watch": "tsc -w -p tsconfig.json && cp \"package.json\" \"dist/\" && cp \"src/swagger.json\" \"dist/\"",
     "dist": "tsc -p tsconfig.json && cp \"package.json\" \"dist/\" && cp \"src/swagger.json\" \"dist/\"",
